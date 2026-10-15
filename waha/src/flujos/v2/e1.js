@@ -7,7 +7,7 @@ function e1() {
   const f = new Flow('E1', 'BrasPer · E1 Cotiza (v2)', 'brasper-v2-e1-cotiza', 'Etapa 1: extrae monto y monedas, cotiza con el backend y ofrece continuar.');
   f.start();
   f.setvar('init', 'continuar', 'no');
-  f.setvar('saludo', 'saludo_txt', '👋 ¡Hola! Soy el asistente de BrasPer. Esta es tu cotización:');
+  f.setvar('saludo', 'saludo_txt', '👋 ¡Hola! Soy el asistente de IA de BrasPer. Esta es tu cotización:');
   f.link('start', 'init').link('init', 'saludo');
   f.agent('extraer', AGENTE_EXTRACCION);
   f.link('saludo', 'extraer');
@@ -17,7 +17,7 @@ function e1() {
   f.link('verifica', 'cotiza', 'completa');
 
   // Respaldo: el mensaje no trae los tres datos.
-  const mo = elegir(f, 'mo', { tipo: 'buttons', body: '¡Hola! 👋 Soy el asistente de BrasPer. ¿Qué moneda quieres enviar?', opciones: MONEDAS_BTN, variable: 'moneda_origen', motivo: 'moneda_origen',
+  const mo = elegir(f, 'mo', { tipo: 'buttons', body: '¡Hola! 👋 Soy el asistente de IA de BrasPer. ¿Qué moneda quieres enviar?', opciones: MONEDAS_BTN, variable: 'moneda_origen', motivo: 'moneda_origen',
     // Si en vez de tocar un botón el cliente escribe la remesa (p. ej. tras mandar una imagen), se interpreta ese texto; el segundo fallo escala.
     siInvalido: 'extraer' });
   const md = elegir(f, 'md', { tipo: 'buttons', body: '¿En qué moneda recibe tu destinatario?', opciones: MONEDAS_BTN, variable: 'moneda_destino', motivo: 'moneda_destino' });

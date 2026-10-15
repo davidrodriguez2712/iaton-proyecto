@@ -9,7 +9,7 @@ test('cliente nuevo: de la cotización hasta que la orden queda en validación e
   const e = m.proveedor.enviados;
   await m.decir('Hola, quiero enviar 500 reales a Perú');
   assert.equal(e[0].tipo, 'botones');
-  assert.match(e[0].texto, new RegExp(`^👋 ¡Hola! Soy el asistente de BrasPer\\. Esta es tu cotización:\n\n📤 Envías: 500\\.00 BRL\n➕ Comisión e impuesto: 14\\.16 BRL\n💳 \\*Total a transferir: 514\\.16 BRL\\*\n📥 \\*Recibes: 337\\.25 PEN\\*\n📈 Tasa: 1 BRL = 0\\.6745 PEN\n⏱ Válida hasta las ${HORA}\n\n¿Quieres continuar\\?$`));
+  assert.match(e[0].texto, new RegExp(`^👋 ¡Hola! Soy el asistente de IA de BrasPer\\. Esta es tu cotización:\n\n📤 Envías: 500\\.00 BRL\n➕ Comisión e impuesto: 14\\.16 BRL\n💳 \\*Total a transferir: 514\\.16 BRL\\*\n📥 \\*Recibes: 337\\.25 PEN\\*\n📈 Tasa: 1 BRL = 0\\.6745 PEN\n⏱ Válida hasta las ${HORA}\n\n¿Quieres continuar\\?$`));
   assert.deepEqual(e[0].opciones.map((o) => o.id), ['continuar', 'cambiar_monto', 'persona']);
   assert.equal(e[1].tipo, 'enlace');
   assert.equal(m.falso.llamadas.find((l) => l.nombre === 'createQuote').data.channel, 'whatsapp');
@@ -257,7 +257,7 @@ test('si Firebase no responde, se avisa del problema temporal y el siguiente men
   assert.equal(m.falso.tickets.size, 0); // no se escaló a nadie
   assert.ok(m.almacen.cargarEjecucion(T));
   await m.decir('ya');
-  assert.match(m.proveedor.enviados.at(-2).texto, /^👋 ¡Hola! Soy el asistente de BrasPer\. Esta es tu cotización:\n\n📤 Envías: 500\.00 BRL/);
+  assert.match(m.proveedor.enviados.at(-2).texto, /^👋 ¡Hola! Soy el asistente de IA de BrasPer\. Esta es tu cotización:\n\n📤 Envías: 500\.00 BRL/);
 }));
 
 test('si createOrder falla por red, la orden no se pierde ni se duplica: el siguiente mensaje reintenta', () => conMundo(async (m) => {
@@ -359,7 +359,7 @@ test('E3: una foto enviada antes de tocar "Ya transferí" no sube nada ni avanza
 test('sentido inverso PEN → BRL: bancos peruanos para enviar y brasileños para recibir, cuenta de pago en soles y orden en validación', () => conMundo(async (m) => {
   const e = m.proveedor.enviados;
   await m.decir('Quiero enviar 500 soles a Brasil');
-  assert.match(e[0].texto, /^👋 ¡Hola! Soy el asistente de BrasPer\. Esta es tu cotización:\n\n📤 Envías: 500\.00 PEN\n➕ Comisión e impuesto: [\d.]+ PEN\n💳 \*Total a transferir: [\d.]+ PEN\*\n📥 \*Recibes: [\d.]+ BRL\*\n📈 Tasa: 1 PEN = [\d.]+ BRL\n⏱ Válida hasta las /);
+  assert.match(e[0].texto, /^👋 ¡Hola! Soy el asistente de IA de BrasPer\. Esta es tu cotización:\n\n📤 Envías: 500\.00 PEN\n➕ Comisión e impuesto: [\d.]+ PEN\n💳 \*Total a transferir: [\d.]+ PEN\*\n📥 \*Recibes: [\d.]+ BRL\*\n📈 Tasa: 1 PEN = [\d.]+ BRL\n⏱ Válida hasta las /);
   const cot = m.falso.llamadas.find((l) => l.nombre === 'createQuote').data;
   assert.deepEqual([cot.sendCurrency, cot.receiveCurrency, cot.sendAmount, cot.channel], ['PEN', 'BRL', 500, 'whatsapp']);
   await m.tocar('continuar', 'Continuar');
@@ -404,7 +404,7 @@ test('USD como moneda de envío ofrece la lista de bancos de dólares y cotiza e
 
 test('una imagen como primer mensaje abre la lista de monedas; escribir la frase de la remesa después la interpreta y cotiza', () => conMundo(async (m) => {
   await m.foto(); // el cliente manda una imagen cualquiera, sin texto
-  assert.equal(m.ultimo().texto, '¡Hola! 👋 Soy el asistente de BrasPer. ¿Qué moneda quieres enviar?');
+  assert.equal(m.ultimo().texto, '¡Hola! 👋 Soy el asistente de IA de BrasPer. ¿Qué moneda quieres enviar?');
   assert.equal(m.falso.llamadas.filter((l) => l.nombre === 'createQuote').length, 0);
   await m.decir('Quiero enviar 500 soles a Brasil');
   const cot = m.falso.llamadas.find((l) => l.nombre === 'createQuote').data;
@@ -428,7 +428,7 @@ test('E3 no inventa un horario de atención: las instrucciones de pago van direc
 
 test('"Cambiar monto" cotiza de nuevo con "Esta es tu nueva cotización", sin repetir el saludo; y el documento dice cuántos dígitos espera', () => conMundo(async (m) => {
   await m.decir('Hola, quiero enviar 500 reales a Perú');
-  assert.match(m.proveedor.enviados[0].texto, /^👋 ¡Hola! Soy el asistente de BrasPer\. Esta es tu cotización:/);
+  assert.match(m.proveedor.enviados[0].texto, /^👋 ¡Hola! Soy el asistente de IA de BrasPer\. Esta es tu cotización:/);
   await m.tocar('cambiar_monto', 'Cambiar monto');
   await m.decir('800');
   const nueva = m.proveedor.enviados.find((e) => /^Esta es tu nueva cotización:/.test(e.texto || ''));

@@ -87,7 +87,7 @@ test('PARIDAD: sin datos de la IA, el flujo pregunta moneda por moneda (el clien
   await m.decir('hola');
   const e = m.proveedor.enviados;
   assert.equal(e.length, 1);
-  assert.equal(e[0].texto, '¡Hola! Soy el asistente de BrasPer. ¿Qué moneda quieres enviar?');
+  assert.equal(e[0].texto, '¡Hola! Soy el asistente de IA de BrasPer. ¿Qué moneda quieres enviar?');
   assert.deepEqual(e[0].opciones.map((o) => o.id), ['BRL', 'PEN', 'USD']);
 });
 
